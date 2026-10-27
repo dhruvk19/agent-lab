@@ -1,0 +1,13 @@
+# Secrets
+.env
+token.json
+credentials.json
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local editor/tool config
+CLAUDE.md
+.claude/
