@@ -1,12 +1,25 @@
-# Local Email Assistant Agent
+# on-device-agent
 
-A personal assistant that runs entirely on a small home PC. It uses a local
-LLM through [Ollama](https://ollama.com) (`qwen3:4b-instruct`), can call tools
-(date math, arithmetic, read-only Gmail), and is used through a private Discord
-bot.
+A private AI agent that runs entirely on-device: a 4-core CPU, 8 GB RAM, no
+GPU, no cloud. Every query stays local and costs nothing.
 
-No cloud LLM, no GPU: it runs on an HP ProDesk 600 G3 (i5-6600, 4 cores, 8 GB
-RAM) at about 8.5 tokens/sec generation.
+It uses a 4B-parameter model (`qwen3:4b-instruct`) through
+[Ollama](https://ollama.com), calls tools (date math, arithmetic, read-only
+Gmail), and is used through a private Discord bot. It runs around the clock on
+an HP ProDesk 600 G3 (i5-6600) at about 8.5 tokens/sec.
+
+## The question
+
+How capable and how safe can a personal agent be when the model is small and
+the hardware is minimal? This project explores two sides of that:
+
+- **Capability:** a 4B model takes shortcuts and doesn't check its own work.
+  How much can tool design, prompting and loop limits make up for that?
+- **Safety:** an agent that reads email, web pages or documents is exposed to
+  prompt injection. Which defenses hold up when the model itself is too small
+  to reliably resist it?
+
+Each new feature is a step in exploring both. Email came first.
 
 ## What it does
 
@@ -104,3 +117,14 @@ python gmail_tools.py       # smoke test: summarize the newest email
 ```
 
 On the home server the bot runs as a systemd service, `agent-bot`.
+
+## Roadmap
+
+- [x] Agent loop with tool calling on a local 4B model
+- [x] Read-only Gmail with quarantined summaries and sanitized headers
+- [x] Discord front end, single owner
+- [ ] Eval harness: a set of prompt-injection test emails, measuring attack
+      success with and without quarantine, plus latency cost on CPU
+- [ ] Actions with side effects, gated by a ✅ reaction in Discord and enforced
+      in code
+- [ ] More tools, each added to the eval harness as it lands
